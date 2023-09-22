@@ -1,12 +1,29 @@
 import numpy as np
 import pandas as pd
 
-data = pd.read_csv("emissions_CO2_2011-2021.csv", header=1)
-data.rename(columns={"Unnamed: 0": "Year"}, inplace=True)
-data = data.set_index('Year')
-data = data.apply(pd.to_numeric, errors='coerce')
+#In MtCO2
+data_CO2 = pd.read_csv("emissions_CO2_2011-2021.csv", header=1) #source: https://globalcarbonatlas.org/
+data_CO2.rename(columns={"Unnamed: 0": "Year"}, inplace=True)
+data_CO2 = data_CO2.set_index('Year')
+data_CO2 = data_CO2.apply(pd.to_numeric, errors='coerce')
+emission_reductions_CO2 = ((data_CO2.loc["2021"] - data_CO2.loc["2011"]) / data_CO2.loc["2011"]) * 100
+print("Sorted based on MtCO2")
+print(emission_reductions_CO2.sort_values().to_string())
 
-selected_data = data.loc[["2011", "2021"]]
-emission_reductions = ((selected_data.loc["2021"] - selected_data.loc["2011"]) / selected_data.loc["2011"]) * 100
+#In kgCO2/GDP
+data_CO2_GDP = pd.read_csv("emissions_CO2_GDP_2011-2021.csv", header=1) #source: https://globalcarbonatlas.org/
+data_CO2_GDP.rename(columns={"Unnamed: 0": "Year"}, inplace=True)
+data_CO2_GDP = data_CO2_GDP.set_index('Year')
+data_CO2_GDP = data_CO2_GDP.apply(pd.to_numeric, errors='coerce')
+emission_reductions_CO2_GDP = ((data_CO2_GDP.loc["2021"] - data_CO2_GDP.loc["2011"]) / data_CO2_GDP.loc["2011"]) * 100
+print("\nSorted based on kgCO2/GDP")
+print(emission_reductions_CO2_GDP.sort_values().to_string())
 
-print(emission_reductions)
+#In tCO2/person
+data_CO2_person = pd.read_csv("emissions_CO2_person_2011-2021.csv", header=1) #source: https://globalcarbonatlas.org/
+data_CO2_person.rename(columns={"Unnamed: 0": "Year"}, inplace=True)
+data_CO2_person = data_CO2_person.set_index('Year')
+data_CO2_person = data_CO2_person.apply(pd.to_numeric, errors='coerce')
+emission_reductions_CO2_person = ((data_CO2_person.loc["2021"] - data_CO2_person.loc["2011"]) / data_CO2_person.loc["2011"]) * 100
+print("\nSorted based on tCO2/person")
+print(emission_reductions_CO2_person.sort_values().to_string())
