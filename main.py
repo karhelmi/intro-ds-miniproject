@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
 
 # In MtCO2
 # Source: https://globalcarbonatlas.org/
@@ -55,3 +57,17 @@ finland_df = finland_df.join(finland_electricity_renewables_df)
 
 print("\nFinland dataframe")
 print(finland_df)
+
+# Draw a scatter plot with linear regression line & calculate R-squared for the model
+finland_df.plot.scatter('CO2_emissions', 'Renewables (% electricity)', c="orange")
+plt.title("CO2 vs Renewables (% of electricity), Finland")
+plt.xlabel("MtCO2 emissions")
+plt.ylabel("% of electricity")
+
+model = LinearRegression()
+model.fit(finland_df.iloc[:,0].values.reshape(-1,1), finland_df.iloc[:,1].values.reshape(-1,1))
+y_fitted = model.predict(finland_df.iloc[:,0].values.reshape(-1,1))
+r_squared = model.score(finland_df.iloc[:,0].values.reshape(-1,1), finland_df.iloc[:,1].values.reshape(-1,1))
+print(f"R-squared is {r_squared}")
+plt.plot(finland_df["CO2_emissions"], y_fitted, color="green")
+plt.show()
