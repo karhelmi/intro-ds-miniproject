@@ -55,20 +55,20 @@ csv_column_dict = {
 
 # Variables we want to include to a dataframe of a country; Uncomment to include in the dataframe
 variable_csv_list = [
-#    'csv_data/1_global-meat-production.csv',
+     'csv_data/1_global-meat-production.csv',
 #    'csv_data/2_meat-supply-per-person.csv',
-#    'csv_data/3_gdp-per-capita-worldbank.csv',
+     'csv_data/3_gdp-per-capita-worldbank.csv',
 #    'csv_data/4_historical-gov-spending-gdp.csv',
-#    'csv_data/5_share-of-individuals-using-the-internet.csv',
+     'csv_data/5_share-of-individuals-using-the-internet.csv',
 #    'csv_data/6_research-spending-gdp.csv',
-#    'csv_data/7_human-development-index.csv',
+     'csv_data/7_human-development-index.csv',
 #    'csv_data/8_human-rights-index-vdem.csv',
 #    'csv_data/9_self-reported-trust-attitudes.csv',
 #    'csv_data/10_co2-emissions-transport.csv',
 #    'csv_data/11_global-fossil-fuel-consumption.csv',
-#    'csv_data/12_nuclear-energy-generation.csv',
-    'csv_data/13_per-capita-energy-use.csv',
-    'csv_data/14_annual-freshwater-withdrawals.csv',
+     'csv_data/12_nuclear-energy-generation.csv',
+     'csv_data/13_per-capita-energy-use.csv',
+#    'csv_data/14_annual-freshwater-withdrawals.csv',
     'csv_data/15_share-electricity-renewables.csv'
 ]
 
@@ -95,7 +95,36 @@ def filter_data(variable_df, country_df, country, column):
     country_variable_df = country_variable_df[column].to_frame()
     country_variable_df.index = country_variable_df.index.astype(int)
     country_df = country_df.join(country_variable_df)
+    country_df.name = country #This should add a name to the dataframe. Needed in plotting.
     return country_df
+
+# Draw a scatter plot with linear regression line & calculate R-squared for the model
+def plot_country_variables_vs_CO2(country_df):  
+    num_columns = 2
+    num_rows = country_df.shape[1] // 2
+    plt.figure(figsize=(15, 10))
+
+    for column_index in range(1,country_df.shape[1]):
+        selected_column = country_df.iloc[:,column_index]
+
+        #Create subplots
+        plt.subplot(num_rows, num_columns, column_index)
+
+        plt.scatter(x=selected_column, y=country_df["CO2_emissions"], c="orange")
+        plt.title(f"CO2 vs {selected_column.name}, {country_df.name}")
+        plt.xlabel(f"{selected_column.name}")
+        plt.ylabel("MtCO2 emissions")
+        
+        model = LinearRegression()
+        model.fit(country_df.iloc[:,column_index].values.reshape(-1,1), country_df.iloc[:,0].values.reshape(-1,1))
+        y_fitted = model.predict(country_df.iloc[:,column_index].values.reshape(-1,1))
+        r_squared = model.score(country_df.iloc[:,column_index].values.reshape(-1,1), country_df.iloc[:,0].values.reshape(-1,1))
+        
+        plt.text(0.8,1.1,f"R squared: {r_squared:.2f}", fontsize=12, color="green", transform=plt.gca().transAxes)
+        plt.plot(selected_column, y_fitted, color="green")
+
+    plt.tight_layout()
+    plt.show()
 
 # Creates dataframe of a country that includes all the uncommented variables
 def country_df_with_data(country, variable_csv_list):
@@ -106,6 +135,8 @@ def country_df_with_data(country, variable_csv_list):
         column = csv_column_dict.get(variable_csv)
         country_df = filter_data(variable_df, country_df, country, column)
 
+    plot_country_variables_vs_CO2(country_df) # Here we create the plots as well.
+
     return country_df
 
 finland_df = country_df_with_data('Finland', variable_csv_list)
@@ -115,17 +146,3 @@ print("\nFinland dataframe")
 print(finland_df)
 print("\nEstonia dataframe")
 print(estonia_df)
-
-# Draw a scatter plot with linear regression line & calculate R-squared for the model
-finland_df.plot.scatter('CO2_emissions', 'Renewables (% electricity)', c="orange")
-plt.title("CO2 vs Renewables (% of electricity), Finland")
-plt.xlabel("MtCO2 emissions")
-plt.ylabel("% of electricity")
-
-model = LinearRegression()
-model.fit(finland_df.iloc[:,0].values.reshape(-1,1), finland_df.iloc[:,1].values.reshape(-1,1))
-y_fitted = model.predict(finland_df.iloc[:,0].values.reshape(-1,1))
-r_squared = model.score(finland_df.iloc[:,0].values.reshape(-1,1), finland_df.iloc[:,1].values.reshape(-1,1))
-print(f"R-squared is {r_squared}")
-plt.plot(finland_df["CO2_emissions"], y_fitted, color="green")
-plt.show()
