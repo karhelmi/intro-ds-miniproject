@@ -177,6 +177,50 @@ r_df_country.set_index(index_labels, inplace=True)
 print("\nR-squared table of the different countries for the variables 1-10")
 print(r_df_country)
 
+#Draw box plot for R-squared:
+data_r = [r_df_country.iloc[0].values, 
+        r_df_country.iloc[1].values,
+        r_df_country.iloc[2].values,
+        r_df_country.iloc[3].values,
+        r_df_country.iloc[4].values,
+        r_df_country.iloc[5].values,
+        r_df_country.iloc[6].values,
+        r_df_country.iloc[7].values,
+        r_df_country.iloc[8].values,
+        r_df_country.iloc[9].values]
+x_labels = r_df_country.index[:10]
+fig = plt.figure(figsize =(10, 7))
+ax = fig.add_axes([0.1, 0.15, 0.8, 0.7])
+ax.boxplot(data_r, showmeans=True)
+ax.set_xticklabels(x_labels, rotation=45)
+ax.set_xlabel('X Axis Label')
+ax.set_ylabel('R squared')
+ax.legend()
+ax.set_title('The distribution of R-squared values by country for each variable')
+
+#Draw box plot for the slope [not good due to high variety in values]:
+data_slope = [slope_df_country.iloc[0].values, 
+            slope_df_country.iloc[1].values,
+            slope_df_country.iloc[2].values,
+            slope_df_country.iloc[3].values,
+            #slope_df_country.iloc[4].values,
+            #slope_df_country.iloc[5].values,
+            slope_df_country.iloc[6].values,
+            slope_df_country.iloc[7].values,
+            slope_df_country.iloc[8].values,
+            slope_df_country.iloc[9].values]
+x_labels = r_df_country.index[:8]
+fig = plt.figure(figsize =(10, 7))
+ax = fig.add_axes([0.1, 0.15, 0.8, 0.7])
+ax.boxplot(data_slope, showmeans=True)
+ax.set_xticklabels(x_labels, rotation=45)
+ax.set_xlabel('X Axis Label')
+ax.set_ylabel('Slope')
+ax.legend()
+ax.set_title('The distribution of slope values by country for each variable')
+
+#plt.show() #Uncomment this row if you want to draw box plots (and all other plots...)
+
 #Export to Excel:
 excel_file_slope ="slope_df_country_excel.xlsx"
 slope_df_country.to_excel(excel_file_slope, index=True, float_format="%.5f")
