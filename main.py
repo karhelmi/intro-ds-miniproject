@@ -1,3 +1,4 @@
+from scipy.stats import linregress
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -108,6 +109,7 @@ def filter_data(variable_df, country_df, country, column):
 # Create an empty dataframe with an index for r-squared values and the slope of the different countries.
 slope_df_country = pd.DataFrame(index=range(1,11))
 r_df_country = pd.DataFrame(index=range(1,11))
+p_value_df_country = pd.DataFrame(index=range(1,11))
 
 # Draw a scatter plot with linear regression line & calculate R-squared for the model
 def plot_country_variables_vs_CO2(country_df):  
@@ -117,30 +119,44 @@ def plot_country_variables_vs_CO2(country_df):
 
     slope_list_country = []
     r_list_country = [] # Create a list to add the different R-squared figures of a country.
+    p_value_list_country = []
 
     for column_index in range(1,country_df.shape[1]):
         selected_column = country_df.iloc[:,column_index]
 
-        #Create subplots
-        plt.subplot(num_rows, num_columns, column_index)
+        if selected_column.var() > 0:
+            #Create subplots
+            plt.subplot(num_rows, num_columns, column_index)
 
-        plt.scatter(x=selected_column, y=country_df["CO2_emissions"], c="orange")
-        plt.title(f"CO2 vs {selected_column.name}, {country_df.name}")
-        plt.xlabel(f"{selected_column.name}")
-        plt.ylabel("MtCO2 emissions")
+            plt.scatter(x=selected_column, y=country_df["CO2_emissions"], c="orange")
+            plt.title(f"CO2 vs {selected_column.name}, {country_df.name}")
+            plt.xlabel(f"{selected_column.name}")
+            plt.ylabel("MtCO2 emissions")
+            
+            model = LinearRegression()
+            model.fit(country_df.iloc[:,column_index].values.reshape(-1,1), country_df.iloc[:,0].values.reshape(-1,1))
+            y_fitted = model.predict(country_df.iloc[:,column_index].values.reshape(-1,1))
+            
+            slope = model.coef_[0][0]
+            slope_list_country.append(slope)
+            
+            r_squared = model.score(country_df.iloc[:,column_index].values.reshape(-1,1), country_df.iloc[:,0].values.reshape(-1,1))
+            r_list_country.append(r_squared)
+
+            p_value = linregress(selected_column, country_df["CO2_emissions"]).pvalue
+            p_value_list_country.append(p_value)
+            
+            plt.text(0.8,1.1,f"R squared: {r_squared:.2f}", fontsize=12, color="green", transform=plt.gca().transAxes)
+            plt.plot(selected_column, y_fitted, color="green")
         
-        model = LinearRegression()
-        model.fit(country_df.iloc[:,column_index].values.reshape(-1,1), country_df.iloc[:,0].values.reshape(-1,1))
-        y_fitted = model.predict(country_df.iloc[:,column_index].values.reshape(-1,1))
-        slope = model.coef_[0][0]
-        slope_list_country.append(slope)
-        r_squared = model.score(country_df.iloc[:,column_index].values.reshape(-1,1), country_df.iloc[:,0].values.reshape(-1,1))
-        r_list_country.append(r_squared)
-        plt.text(0.8,1.1,f"R squared: {r_squared:.2f}", fontsize=12, color="green", transform=plt.gca().transAxes)
-        plt.plot(selected_column, y_fitted, color="green")
+        else:
+            slope_list_country.append(0)
+            r_list_country.append(0)
+            p_value_list_country.append(0)
 
     slope_df_country[f"{country_df.name}"] = slope_list_country
     r_df_country[f"{country_df.name}"] = r_list_country # Add the r-squared values of the country to the R-squared dataframe
+    p_value_df_country[f"{country_df.name}"] = p_value_list_country
 
     plt.tight_layout()
     #plt.show() # Uncomment this row if you want to generate the graphs for each country.
@@ -176,6 +192,10 @@ print(slope_df_country)
 r_df_country.set_index(index_labels, inplace=True)
 print("\nR-squared table of the different countries for the variables 1-10")
 print(r_df_country)
+
+p_value_df_country.set_index(index_labels, inplace=True)
+print("\nP value table of the different countries for the variables 1-10")
+print(p_value_df_country)
 
 #Draw box plot for R-squared:
 data_r = [r_df_country.iloc[0].values, 
