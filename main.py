@@ -196,6 +196,10 @@ print(r_df_country)
 p_value_df_country.set_index(index_labels, inplace=True)
 print("\nP value table of the different countries for the variables 1-10")
 print(p_value_df_country)
+# Print p-values in a pretty markdown table
+# Run 'pip install tabulate' before running this
+# print("\nP value table as markdown")
+# print(p_value_df_country.to_markdown())
 
 #Draw box plot for R-squared:
 data_r = [r_df_country.iloc[0].values, 
