@@ -46,13 +46,17 @@ Towards the end of the project, we also calculated the p-value for our linear re
 
 We organized all countries in order based on how much they have reduced their CO2 emissions. Figure 1 shows the countries with the biggest reductions and the countries which we analyzed in more detail are marked with dark green.
 
-(figure to be added later)
+![countries](../Graphs/countries_co2_emission_reduction.png)
+
+Figure 1. Countries that have reduced their CO2 emissions over 20%.
 
 The countries for further analysis are Estonia, Bosnia and Herzegovina, Greece, Serbia, Finland, Denmark, Malta, Sweden, Montenegro, Hong Kong, Luxembourg, Slovenia and Portugal. All of these countries have reduced their CO2 emissions more than 20% between the years 2011 and 2021. The countries with the biggest reduction, Aruba and Curaçao, were left out of our study due to them being small islands.
 
 For each selected country, we created plots that visualize the linear regression for each of our factors. Figure 2 displays one example of these. Since we have ten factors that we analyzed for each country, each country had ten plots.
 
-(figure to be added later)
+![renewables_finland](../Graphs/renewables_finland.png)
+
+Figure 2. Graph showing linear regression for renewable energy factor for Finland.
 
 In the final analysis we collected the R-squared values, slope values and p-values to excel sheet (available in GitHub) and used them to conclude our final results. The plots (Figure 2) had issues with the axis not starting from zero and thus giving an impression of a bigger change than there truly is.
 
