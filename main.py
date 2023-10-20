@@ -188,18 +188,26 @@ index_labels = pd.Series(["Meat prod", "Life expectancy", "GDP per capita", "% o
 slope_df_country.set_index(index_labels, inplace=True)
 print("\nSlope table of the different countries for the variables 1-10")
 print(slope_df_country)
+# Print slope-values in a pretty markdown table
+# Run 'pip install tabulate' before running this
+#print("\nSlope value table as markdown")
+#print(slope_df_country.to_markdown())
 
 r_df_country.set_index(index_labels, inplace=True)
 print("\nR-squared table of the different countries for the variables 1-10")
 print(r_df_country)
+# Print slope-values in a pretty markdown table
+# Run 'pip install tabulate' before running this
+#print("\nR-Squared value table as markdown")
+#print(r_df_country.to_markdown())
 
 p_value_df_country.set_index(index_labels, inplace=True)
 print("\nP value table of the different countries for the variables 1-10")
 print(p_value_df_country)
 # Print p-values in a pretty markdown table
 # Run 'pip install tabulate' before running this
-# print("\nP value table as markdown")
-# print(p_value_df_country.to_markdown())
+#print("\nP value table as markdown")
+#print(p_value_df_country.to_markdown())
 
 #Draw box plot for R-squared:
 data_r = [r_df_country.iloc[0].values, 
