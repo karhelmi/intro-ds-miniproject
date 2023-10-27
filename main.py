@@ -251,7 +251,7 @@ ax.set_ylabel('Slope')
 ax.legend()
 ax.set_title('The distribution of slope values by country for each variable')
 
-#plt.show() #Uncomment this row if you want to draw box plots (and all other plots...)
+plt.show() #Uncomment this row if you want to draw box plots (and all other plots...)
 
 #Export to Excel:
 excel_file_slope ="slope_df_country_excel.xlsx"
